@@ -9,7 +9,7 @@ All of the code to style the page has been written for you, meaning that you sho
 
 ## What You Already Have
 
-`BotCard` and `BotSpecs` are presentational components that have been provided for you that will render out information about an individual bot formatted for a list and for a specs view, respectively. They are pre-styled, and it is your responsibility to get the data into them.
+`BotCard` and `BotSpecs` are presentational components that have been provided for you that will render out information about an individual bot formatted for a list and for a details view, respectively. They are pre-styled, and it is your responsibility to get the data into them.
 
 `BotCollection` and `YourBotArmy` are container components. `BotCollection` is where all the bots will be displayed, while `YourBotArmy` (the green portion on the top of the screen) will only display the bots that have been selected by the user.
 
