@@ -1,6 +1,7 @@
 import React from "react";
 import BotCollection from './BotCollection'
 import YourBotArmy from './YourBotArmy'
+import BotSpecs from '../components/BotSpecs'
 
 const botsAPI = 'https://bot-battler-api.herokuapp.com/api/v1/bots'
 
@@ -8,7 +9,9 @@ class BotsPage extends React.Component {
 
   state = {
     allBots: [],
-    enlistedBots: []
+    enlistedBots: [],
+    examineState: 1,
+    examineRobot: []
   }
 
   componentDidMount() {
@@ -49,11 +52,40 @@ class BotsPage extends React.Component {
     }
   }
 
+  examineBot = (robot) => {
+    console.log("examining")
+  
+    this.setState((previousState) => {
+      return {
+        examineState: previousState.examineState * -1,
+        examineRobot: robot
+      }
+    })
+    // armyBox = () => {
+    //   return (
+    //     <div>
+    //      <h1>it worked</h1>
+    //     </div>
+    //   )
+    // }
+  }
+
+  // armyBox = () => {
+  //   return (
+  //       <BotCollection
+  //         bots={this.state.allBots}
+  //         onExamineBot={this.examineBot}
+  //         onDraftBot={this.draftBot}
+  //       />
+        
+  //   )
+  // }
+
   render() {
     return (
       <div>
-        <BotCollection bots={this.state.allBots} onDraftBot={this.draftBot}/>
-        <YourBotArmy bots={this.state.enlistedBots} onDraftBot={this.draftBot}/>
+        {this.state.examineState === 1 ? <BotCollection bots={this.state.allBots} onExamineBot={this.examineBot} onDraftBot={this.draftBot}/> : <BotSpecs bot={this.state.examineRobot} onExamineBot={this.examineBot} onDraftBot={this.draftBot}/>}
+        <YourBotArmy bots={this.state.enlistedBots} onDraftBot={this.draftBot} onExamineBot={this.draftBot}/>
       </div>
     );
   }
