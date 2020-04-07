@@ -2,6 +2,7 @@ import React from "react";
 import BotCollection from './BotCollection'
 import YourBotArmy from './YourBotArmy'
 import BotSpecs from '../components/BotSpecs'
+import BotFilter from '../components/BotFilter'
 
 const botsAPI = 'https://bot-battler-api.herokuapp.com/api/v1/bots'
 
@@ -9,9 +10,11 @@ class BotsPage extends React.Component {
 
   state = {
     allBots: [],
+    currentBots: [],
     enlistedBots: [],
     examineState: 1,
-    examineRobot: []
+    examineRobot: [],
+    collectionMessage: "Collection of All Bots"
   }
 
   componentDidMount() {
@@ -25,18 +28,14 @@ class BotsPage extends React.Component {
     })
     .then((data) => {
       this.setState({
-        allBots: data
+        allBots: data,
+        currentBots: data
       })
     })
   }
 
-  //yeah this is named a little confusingly right now but the functionality works
   draftBot = (robot) => {
-    // console.log("drafted!")
-    // console.log(robot)
     if (this.state.enlistedBots.find(enlistedBot => enlistedBot.id === robot.id)) {
-      // console.log("already there!")
-      //I think technically this is only supposed to work if you're clicking on the card in the enlisted bots row, but that requires a little more fiddling
       this.setState((previousState) => {
         let newArmy = previousState.enlistedBots.filter((enlistedBot => enlistedBot.id !== robot.id))
         return {
@@ -53,39 +52,59 @@ class BotsPage extends React.Component {
   }
 
   examineBot = (robot) => {
-    console.log("examining")
-  
     this.setState((previousState) => {
       return {
         examineState: previousState.examineState * -1,
         examineRobot: robot
       }
     })
-    // armyBox = () => {
-    //   return (
-    //     <div>
-    //      <h1>it worked</h1>
-    //     </div>
-    //   )
-    // }
   }
 
-  // armyBox = () => {
-  //   return (
-  //       <BotCollection
-  //         bots={this.state.allBots}
-  //         onExamineBot={this.examineBot}
-  //         onDraftBot={this.draftBot}
-  //       />
-        
-  //   )
-  // }
+  filterBots = (value) => {
+    console.log("filtering")
+    console.log(value)
+    console.log(this.state.allBots)
+    if (value === "All") {
+      this.setState({
+        currentBots: this.state.allBots,
+        collectionMessage: "Collection of All Bots"
+      })
+    } else {
+      this.setState((previousState) => {
+        let filteredBots = previousState.allBots.filter((robot) => {
+          return robot.bot_class === value
+        })
+        return {
+          currentBots: filteredBots,
+          collectionMessage: `Collection of ${value} Bots`
+        }
+      })
+    }
+  }
 
   render() {
     return (
       <div>
-        {this.state.examineState === 1 ? <BotCollection bots={this.state.allBots} onExamineBot={this.examineBot} onDraftBot={this.draftBot}/> : <BotSpecs bot={this.state.examineRobot} onExamineBot={this.examineBot} onDraftBot={this.draftBot}/>}
-        <YourBotArmy bots={this.state.enlistedBots} onDraftBot={this.draftBot} onExamineBot={this.draftBot}/>
+        <BotFilter onFilter={this.filterBots}/>
+        <YourBotArmy 
+          bots={this.state.enlistedBots}
+          onDraftBot={this.draftBot}
+          onExamineBot={this.draftBot}
+        />
+        {
+          this.state.examineState === 1 
+          ? <BotCollection 
+              bots={this.state.currentBots} 
+              onExamineBot={this.examineBot} 
+              onDraftBot={this.draftBot} 
+              message={this.state.collectionMessage}
+          />
+          : <BotSpecs 
+              bot={this.state.examineRobot} 
+              onExamineBot={this.examineBot} 
+              onDraftBot={this.draftBot}
+          />
+        }
       </div>
     );
   }
