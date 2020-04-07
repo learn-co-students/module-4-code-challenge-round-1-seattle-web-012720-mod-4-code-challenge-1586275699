@@ -61,9 +61,6 @@ class BotsPage extends React.Component {
   }
 
   filterBots = (value) => {
-    console.log("filtering")
-    console.log(value)
-    console.log(this.state.allBots)
     if (value === "All") {
       this.setState({
         currentBots: this.state.allBots,
